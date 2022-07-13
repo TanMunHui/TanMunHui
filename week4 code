@@ -1,0 +1,66 @@
+import sys
+# Python 3.7 is required
+assert sys.version_info >= (3,7)
+
+import cv2 as cv
+import numpy as np
+
+# For reproducibility,
+np.random.seed(99)
+
+# Make sure that optimization is enabled
+if not cv.useOptimized():
+    cv.setUseOptimized(True)
+
+cv.useOptimized()
+
+#Q1
+img_1 = cv.imread('soccer.jpg')
+img_2 = cv.imread('lena.jpg')
+
+new_width = 300
+new_height = 250
+img_resize1 = cv.resize(img_1, (new_width, new_height), interpolation = cv.INTER_LINEAR)
+img_resize2 = cv.resize(img_2, (new_width, new_height), interpolation = cv.INTER_LINEAR)
+
+Hori = np.concatenate((img_resize1, img_resize2), axis=1)
+Verti = np.concatenate((img_resize1, img_resize2), axis=0)
+
+cv.imshow('hori', Hori)
+cv.imshow("verti", Verti)
+cv.waitKey(0)
+cv.destroyAllWindows()
+
+#Q2
+# Create a VideoCapture object
+cap = cv.VideoCapture('img_pexels.mp4')
+
+# Check if the object has been created successfully
+if not cap.isOpened():
+    print("Unable to create video")
+    
+fourcc = cv.VideoWriter_fourcc(*'XVID')
+out = cv.VideoWriter('smaller_img_pexels.avi',fourcc, 10, (1280,720))
+
+# Read until the video is completed.
+while cap.isOpened():
+    ret, frame = cap.read()
+    
+    # if frame is read then ret is True
+    if not ret:
+        print("Can't receive frame.")
+        break
+    
+    resize = cv.resize(frame,(1280,720), interpolation = cv.INTER_CUBIC)
+    out.write(resize)
+    cv.imshow('frame', resize)
+    # Press Esc key to exit (27 is ASCII code for Esc). cv.waitKey() returns 32 bit integer values. You can find the ASCII table
+    # on this URL: https://theasciicode.com.ar/
+    if cv.waitKey(1) & 0xFF == 27:
+        break
+
+# destroy the constructor
+cap.release()
+cv.destroyAllWindows()
+
+#Q3
