@@ -64,3 +64,23 @@ cap.release()
 cv.destroyAllWindows()
 
 #Q3
+def grayConversion(image):
+    grayValue = 0.07 * image[:, :, 2] + 0.72 * image[:, :, 1] + 0.21 * image[:, :, 0]
+    gray_img = grayValue.astype(np.uint8)
+    return gray_img
+
+from PIL import Image
+w,h = 512,512
+t = (h, w, 3)
+img = np.zeros(t, dtype=np.uint8)
+for i in range(h):
+    for j in range(w):
+        img[i, j]=[i%256, j%256, (i+j)%256]
+i = Image.fromarray(img, "RGB")
+
+conv = grayConversion(img)
+
+cv.imshow('image', img)
+cv.imshow('g_image', conv)
+cv.waitKey(0)
+cv.destroyAllWindows()
